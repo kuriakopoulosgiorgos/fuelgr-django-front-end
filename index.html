@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <style>
+            /* Always set the map height explicitly to define the size of the div
+             * element that contains the map. */
+            #map, #page-content-wrapper, #wrapper {
+                height: 100%;
+            }
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            .labels {
+                color: #000;
+                font-weight: bold;
+                font-size: 14px;
+                opacity: 1;
+                pointer-events: none;
+                text-align: center;
+
+                background-color: white;
+
+            }
+
+        </style>
+
+        <title>fuelgr project</title>
+        <link href="css/mycss.css" rel="stylesheet">
+        <!-- Bootstrap core CSS -->
+        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom styles for this template -->
+        <link href="css/simple-sidebar.css" rel="stylesheet">
+
+
+    </head>
+
+    <body>
+
+        <div id="wrapper" class="toggled">
+
+            <!-- Sidebar -->
+            <div id="sidebar-wrapper">
+                <ul class="sidebar-nav">
+                    <li class="sidebar-brand">
+                        <a href="#">
+                            Fuelgr project
+                        </a>
+                    </li>             
+                    <li>
+                        <select class="form-control" id="fueltype-selector"></select>
+                    </li>
+                    <li>
+                        <div id="sidebar-options"></div>
+                    </li>
+                    <li>
+                        <span class="badge badge-success">Πλήθος</span>
+                    </li>
+                    <li id="statistics-count" style="color:red">
+
+                    </li>
+                    <li>
+                        <span class="badge badge-success">Ελάχιστη τιμή</span>
+                    </li>
+                    <li id="statistics-min" style="color:green">
+
+                    </li>
+                    <li>
+                        <span class="badge badge-success">Μέγιστη τιμή</span>
+                    </li>
+                    <li id="statistics-max" style="color:blue">
+
+                    </li>
+                    <li>
+                        <span class="badge badge-success">Μέσος όρος</span>
+                    </li>
+                    <li id="statistics-avg" style="color:yellow">
+
+                    </li>
+                </ul>
+
+
+
+
+
+
+            </div>
+
+
+            <!-- /#sidebar-wrapper -->
+
+            <!-- Page Content -->
+            <div id="button-slider"><a href="#menu-toggle" class="btn" id="menu-toggle" style="color:white">|||</a></div>
+            <div id="page-content-wrapper">
+                <div id="message-area"></div>
+                <div id="map"></div>
+
+            </div>
+
+            <!-- /#page-content-wrapper -->
+
+        </div>
+
+        <!-- modals -->
+        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="username" class="col-form-label">Username</label>
+                                <input type="text" class="form-control" id="username">
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="col-form-label">Password</label>
+                                <input type="password" class="form-control" id="password"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="login()">Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="priceListModal" tabindex="-1" role="dialog" aria-labelledby="priceListModal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="priceListModalLabel">Products</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div id ="products-form-group" class="form-group">
+                        </form>
+                    </div>
+                    <div id="fuel-list-footer" class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="editFuelModal" tabindex="-2" role="dialog" aria-labelledby="editFuelModalLabel" aria-hidden="true" style="overflow: auto;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editFuelModalLabel">Update Fuel</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="fueltypeid" class="col-form-label">fuel type id</label>
+                            <input type="text" class="form-control" id="fueltypeid">
+                        </div>
+                        <div class="form-group">
+                            <label for="fuelsubtypeid" class="col-form-label">fuel subtype id</label>
+                            <input type="text" class="form-control" id="fuelsubtypeid"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="fuelname" class="col-form-label">fuel name</label>
+                            <input type="text" class="form-control" id="fuelname"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="fuelnormalname" class="col-form-label">fuel normal name</label>
+                            <input type="text" class="form-control" id="fuelnormalname"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="fuelprice" class="col-form-label">fuel price</label>
+                            <input type="number" step="0.001" class="form-control" id="fuelprice"/>
+                        </div>
+                    </form>
+                </div>
+                <div id="fuel-update-footer" class="modal-footer">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+        
+        
+        
+        
+        <div class="modal fade" id="orderListModal" tabindex="-1" role="dialog" aria-labelledby="orderListModal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="orderListModalLabel">Orders</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div id ="orders-form-group" class="form-group">
+                        </form>
+                    </div>
+                    <div id="orders-list-footer" class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+        
+    <!-- end-modals -->
+
+    <!-- /#wrapper -->
+
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script> 
+    <script src="vendor/js/map.js"></script>   
+    <script src="vendor/js/auth.js"></script>
+    <script src="vendor/js/application.js"></script>   
+    <script src="vendor/js/apicalls.js"></script>    
+    <script src="https://maps.googleapis.com/maps/api/js?key=--your_api_key--callback=initMap"></script>
+    <script src="vendor/js/markerwithlabel.js"></script>  
+
+    <script>
+                            $("#menu-toggle").click(function (e) {
+                                e.preventDefault();
+                                $("#wrapper").toggleClass("toggled");
+                            });
+    </script>
+
+
+
+</body>
+
+</html>

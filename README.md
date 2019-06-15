@@ -3,7 +3,7 @@
 
 # ![Logo](https://fuelgr.gr/web/img/app_logo/fuelGR-map.png) 
 
-# fuelgr-django-front-end
+# fuelgr-django-frontend
 Communicates with the django back-end
 
 Uses google maps API, uses javascript to communicate with the fuelgr-django api through ajax calls,
